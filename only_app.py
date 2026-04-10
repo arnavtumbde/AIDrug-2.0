@@ -2,7 +2,7 @@ import streamlit as st
 import numpy as np
 from rdkit import Chem
 from rdkit.Chem.Draw import MolsToImage
-from groq_service import generate_smiles_from_text
+from groq_service import generate_smiles_from_text, analyze_analogs
 
 # Import functions and variables from our logic file
 from mol_logic import (
@@ -169,6 +169,60 @@ def main():
 
             mols = [a["mol"] for a in st.session_state.analogs]
             st.image(MolsToImage(mols, molsPerRow=5), caption="Visualizing structure of top analogs")
+
+            # --- AI Analog Intelligence Layer ---
+            st.divider()
+            
+            if st.button("Analyze Analogs with AI"):
+                top_analogs = st.session_state.analogs[:5]
+                smiles_list = [a["smiles"] for a in top_analogs]
+                
+                with st.spinner("Analyzing analogs with AI..."):
+                    try:
+                        analysis_result = analyze_analogs(smiles_list)
+                        st.session_state.analog_analysis = analysis_result
+                    except Exception as e:
+                        st.error(f"Failed to analyze analogs: {e}")
+
+            if "analog_analysis" in st.session_state and st.session_state.analog_analysis:
+                data = st.session_state.analog_analysis
+                st.subheader("🤖 Analog Insights")
+                
+                analogs_info = {item.get("smiles", ""): item for item in data.get("analogs", [])}
+                
+                for i, analog in enumerate(st.session_state.analogs[:5]):
+                    smiles = analog["smiles"]
+                    # Try to match output based on SMILES
+                    info = analogs_info.get(smiles) 
+                    
+                    # Alternatively, if SMILES mismatch occurs, we match by index if len aligns
+                    if not info and i < len(data.get("analogs", [])):
+                        info = data["analogs"][i]
+
+                    if info:
+                        with st.expander(f"Analog {i + 1} (SMILES: {smiles})"):
+                            st.markdown(f"**Status:** {info.get('status', 'Unknown')}")
+                            st.markdown(f"**Type:** {info.get('type', 'Unknown')}")
+                            st.markdown(f"**Use:** {info.get('use', 'Unknown')}")
+                            st.markdown(f"**Similar:** {info.get('similar', 'None')}")
+                            st.markdown(f"**Insight:** {info.get('insight', 'No insight provided.')}")
+                
+                st.divider()
+                st.subheader("🧠 Analog Intelligence Summary")
+                summary = data.get("summary", {})
+                
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.metric("Likely Novel", summary.get("novel_count", 0))
+                with col2:
+                    st.metric("Known / Likely Known", summary.get("known_count", 0))
+                    
+                st.markdown(f"**Most Common Pattern:** {summary.get('common_pattern', 'N/A')}")
+                st.markdown(f"**Best Candidate:** `{summary.get('best_candidate_smiles', 'None')}`")
+                st.markdown(f"**Why Best:** {summary.get('best_candidate_reasoning', 'N/A')}")
+                
+                st.info(f"**Safety Observation:** {summary.get('safety_observation', 'None')}")
+                st.success(f"**Recommendation:** {summary.get('recommendation', 'None')}")
 
 
 if __name__ == "__main__":
