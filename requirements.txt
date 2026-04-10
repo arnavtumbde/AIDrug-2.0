@@ -6,3 +6,5 @@ selfies
 torch==2.5.1
 torch-geometric==2.6.1
 protobuf==3.20.3
+groq
+python-dotenv

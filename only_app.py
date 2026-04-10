@@ -1,6 +1,8 @@
 import streamlit as st
 import numpy as np
+from rdkit import Chem
 from rdkit.Chem.Draw import MolsToImage
+from groq_service import generate_smiles_from_text
 
 # Import functions and variables from our logic file
 from mol_logic import (
@@ -29,17 +31,63 @@ def main():
     col_input, col_task = st.columns([2, 1])
 
     with col_input:
-        input_type = st.radio("Input Type", ["SMILES", "IUPAC"], horizontal=True)
-        user_input = st.text_input("Enter Molecule", value="CC(=O)OC1=CC=CC=C1C(=O)O")
+        input_type = st.radio("Input Type", ["SMILES", "IUPAC", "AI Prompt"], horizontal=True)
+        
+        if input_type == "AI Prompt":
+            user_input = st.text_area("Describe the molecule in plain English", value="A simple painkiller like aspirin")
+            
+            if st.button("Generate SMILES"):
+                if not user_input.strip():
+                    st.error("Please enter a description.")
+                else:
+                    with st.spinner("Generating SMILES via AI Assistance..."):
+                        try:
+                            # Generate SMILES
+                            generated_smiles = generate_smiles_from_text(user_input)
+                            st.session_state.generated_smiles = generated_smiles
+                            st.success(f"Generated SMILES: {generated_smiles}")
+                            
+                            # Preview Molecule
+                            mol_preview = Chem.MolFromSmiles(generated_smiles)
+                            if mol_preview:
+                                st.image(MolsToImage([mol_preview]), caption="Generated Molecule Preview")
+                            else:
+                                st.error("Generated SMILES is invalid.")
+                                st.session_state.generated_smiles = None
+                        except Exception as e:
+                            st.error(f"Failed to generate SMILES: {e}")
+                            
+            if st.session_state.get("generated_smiles"):
+                st.info(f"Current generated SMILES: {st.session_state.generated_smiles}")
+                st.session_state.ai_verified = st.checkbox("I confirm this molecule is correct")
+            else:
+                st.session_state.ai_verified = False
+
+        else:
+            user_input = st.text_input("Enter Molecule", value="CC(=O)OC1=CC=CC=C1C(=O)O")
 
     with col_task:
         task_name = st.selectbox("Explain endpoint", tox21_tasks)
         task_id = tox21_tasks.index(task_name)
 
     # --- Run Prediction ---
-    if st.button("Run prediction"):
+    if input_type == "AI Prompt":
+        if not st.session_state.get("generated_smiles"):
+            st.warning("Please generate a SMILES string first.")
+        elif not st.session_state.get("ai_verified"):
+            st.warning("Please check the verification box to enable prediction.")
+            
+    prediction_disabled = (input_type == "AI Prompt" and not st.session_state.get("ai_verified", False))
+
+    if st.button("Run prediction", disabled=prediction_disabled):
         try:
-            smiles = iupac_to_smiles(user_input) if input_type == "IUPAC" else user_input
+            if input_type == "AI Prompt":
+                smiles = st.session_state.get("generated_smiles", "")
+                if not smiles:
+                    raise ValueError("No SMILES generated yet.")
+            else:
+                smiles = iupac_to_smiles(user_input) if input_type == "IUPAC" else user_input
+                
             if input_type == "IUPAC": st.info(f"Converted SMILES: {smiles}")
 
             mol, probs = predict_smiles(smiles, model, device)
