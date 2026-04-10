@@ -1,89 +1,209 @@
-# 🔬 AI Drug Discovery Copilot (Tox21 GNN + Groq AI)
-
-An AI-powered drug discovery assistant that combines **Graph Neural Networks (GNNs)** with **LLMs (Groq)** to predict molecular toxicity, analyze drug-likeness, and generate human-understandable insights.
-
-This project transforms a traditional ML pipeline into an **AI Copilot for Drug Discovery** by adding natural language interaction, explainability, and decision support.
 
 ---
 
-## 🚀 Features
+# 🔬 AI Drug Discovery Copilot
+
+### *Tox21 GNN + Groq AI Powered Assistant*
+
+An **AI-powered drug discovery copilot** that combines **Graph Neural Networks (GNNs)** with **Large Language Models (Groq)** to:
+
+* Predict molecular toxicity
+* Analyze drug-likeness
+* Generate new molecular candidates
+* Provide human-readable insights
+
+This project upgrades a traditional ML pipeline into an **interactive AI assistant** with explainability and decision support.
+
+---
+
+## 🚀 Key Features
 
 ### 🧪 Toxicity Prediction (Tox21 GNN)
-- Multi-task prediction across 12 biological endpoints
-- Built using PyTorch Geometric (GINEConv)
-- Outputs probability scores for toxicity risks
+
+* Multi-task prediction across **12 biological endpoints**
+* Built using **PyTorch Geometric (GINEConv)**
+* Outputs **probability scores for toxicity risks**
+
+---
 
 ### 🧠 Explainable AI (XAI)
-- Atom-level importance visualization
-- Highlights toxic regions in molecules
-- Gradient-based explainability
+
+* Atom-level importance visualization
+* Highlights **toxic regions in molecules**
+* Uses **gradient-based explainability**
+
+---
 
 ### 🧬 Drug-Likeness Analysis
-- Molecular Weight (MW)
-- LogP (lipophilicity)
-- TPSA (polarity)
-- QED (drug-likeness score)
-- SA Score (synthetic accessibility)
-- Lipinski Rule evaluation + PAINS filtering
+
+Evaluate molecules using key pharmaceutical metrics:
+
+* Molecular Weight (MW)
+* LogP (Lipophilicity)
+* TPSA (Polarity)
+* QED (Drug-likeness score)
+* SA Score (Synthetic Accessibility)
+
+✔ Lipinski Rule Evaluation
+✔ PAINS Filtering
+
+---
 
 ### 🔁 Analog Generation
-- SELFIES-based mutation
-- Generates valid molecular candidates
-- Multi-objective scoring (toxicity + QED + SA)
+
+* SELFIES-based mutation
+* Generates **valid molecular candidates**
+* Multi-objective optimization:
+
+  * Toxicity ↓
+  * QED ↑
+  * SA Score ↑
 
 ---
 
 ## 🤖 Groq AI Integration
 
 ### 💬 Natural Language → SMILES
-- Describe molecules in plain English
-- AI converts into valid SMILES
-- Preview before prediction
+
+* Describe molecules in **plain English**
+* AI converts them into **valid SMILES**
+* Preview before running predictions
+
+---
 
 ### 🧠 Explain Button
-- Converts complex outputs into simple explanations
-- Explains:
-  - Toxicity tables
-  - Drug metrics
-  - Molecular structures
+
+Simplifies complex outputs into human-friendly insights:
+
+* Toxicity tables
+* Drug-likeness metrics
+* Molecular structures
+
+---
 
 ### 📊 Decision Support
-- Helps interpret risk levels
-- Suggests insights for molecule evaluation
+
+* Interprets **risk levels**
+* Suggests actionable insights
+* Helps in **molecule evaluation & selection**
 
 ---
 
 ## 🧩 Tech Stack
 
-- **Frontend:** Streamlit  
-- **ML Model:** PyTorch Geometric (GNN)  
-- **Cheminformatics:** RDKit  
-- **Molecule Generation:** SELFIES  
-- **LLM Layer:** Groq API (LLaMA models)  
+| Layer                  | Technology              |
+| ---------------------- | ----------------------- |
+| 🎨 Frontend            | Streamlit               |
+| 🧠 ML Model            | PyTorch Geometric (GNN) |
+| ⚗️ Cheminformatics     | RDKit                   |
+| 🧬 Molecule Generation | SELFIES                 |
+| 🤖 LLM Layer           | Groq API (LLaMA Models) |
 
 ---
 
-# Clone repo
+## ⚙️ Installation & Setup
+
+### 1️⃣ Clone Repository
+
+```bash
 git clone https://github.com/arnavtumbde/AIDrug-2.0.git
 cd AIDrug-2.0
+```
 
-# Create virtual environment
+---
+
+### 2️⃣ Create Virtual Environment
+
+```bash
 python -m venv venv
+```
 
-# Activate (Windows)
+---
+
+### 3️⃣ Activate Environment
+
+**Windows**
+
+```bash
 venv\Scripts\activate
+```
 
-# If using Mac/Linux, use this instead:
-# source venv/bin/activate
+**Mac/Linux**
 
-# Upgrade pip
+```bash
+source venv/bin/activate
+```
+
+---
+
+### 4️⃣ Upgrade pip
+
+```bash
 python -m pip install --upgrade pip
+```
 
-# Install dependencies
+---
+
+### 5️⃣ Install Dependencies
+
+```bash
 pip install -r requirements.txt
+```
 
-# Create .env file with Groq API key
+---
+
+### 6️⃣ Set Up Environment Variables
+
+Create a `.env` file:
+
+```bash
 echo GROQ_API_KEY=your_groq_api_key_here > .env
+```
 
-# Run the app
+---
+
+### 7️⃣ Run the Application
+
+```bash
 streamlit run only_app.py
+```
+
+---
+
+## 🎯 Use Cases
+
+* Early-stage **drug discovery screening**
+* Toxicity risk assessment
+* Molecule optimization
+* AI-assisted medicinal chemistry
+
+---
+
+## 🌟 Future Improvements
+
+* Docking simulation integration
+* Protein-ligand interaction modeling
+* Advanced multi-objective optimization
+* Dataset expansion beyond Tox21
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome. Feel free to fork the repo and submit pull requests.
+
+---
+
+## 📜 License
+
+This project is licensed under the **MIT License**.
+
+---
+
+## 💡 Author
+
+**Arnav Tumbde, Anshu Bagne, Aniruddha Moharir** 
+AI + Drug Discovery Enthusiast
+
+---
+
