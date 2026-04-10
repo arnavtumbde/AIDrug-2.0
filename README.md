@@ -115,7 +115,7 @@ cd AIDrug-2.0
 ### 2️⃣ Create Virtual Environment
 
 ```bash
-python -m venv venv
+py -3.10 -m venv venv
 ```
 
 ---
